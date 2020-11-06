@@ -20,8 +20,6 @@ PURPOSE:
 PRODUCES:
     canny, a binarized image with various edges (white) detected
 ============================================================================"""
-
-
 def canny(image):
 
     # Convert image grayscale
@@ -46,8 +44,6 @@ PURPOSE:
 PRODUCES:
     mask, a mask where the region of interest is 255 and the rest are 0
 ============================================================================"""
-
-
 def region_of_interest(image_h_w):
 
     # Create a black image with same dimensions
@@ -89,8 +85,6 @@ PURPOSE:
 PRODUCES:
     detected_linse, an image with lines drawn on a black background
 ============================================================================"""
-
-
 def display_line(image_h_w, lines):
 
     # Create a black image with same dimensions
@@ -123,8 +117,6 @@ PURPOSE:
 PRODUCES:
     coord, an np-array of computed coordinates 
 ============================================================================"""
-
-
 def make_coordinates(img_height, line_parameters):
 
     slope, y_intercept = line_parameters
@@ -146,8 +138,8 @@ PARAMETERS:
     img_height, height of an image
     lines, an np-array of all the lines in (x1, y1, x2, y2) coordinate format
       [[[x1, y1, x2, y2]], [[x1, y1, x2, y2]], ... [[x1, y1, x2, y2]]]
-    left_fit_p, left_fit values from the previous recursion-cycle
-    right_fit_p, right_fit values from the previous recursion-cycle
+    left_fit_p, left_fit values from the previous cycle
+    right_fit_p, right_fit values from the previous cycle
 PURPOSE:
     calculates the average slope and average y-intercept for left and right
 PRODUCES:
@@ -156,8 +148,6 @@ PRODUCES:
     left_fit, slopes and y-intercepts calculated from this cycle
     right_fit, slopes and y-intercepts calculated from this cycle
 ============================================================================"""
-
-
 def avg_slope_intercept(img_height, lines, left_fit_p, right_fit_p):
 
     # Two lists to hold information about the lines on the left and right
@@ -175,16 +165,16 @@ def avg_slope_intercept(img_height, lines, left_fit_p, right_fit_p):
             slope = parameters[0]
             y_intercept = parameters[1]
 
-            if slope < 0:  # lines on the left will have negative slopes
+            if slope > 0:  # lines on the left will have positive slopes
                 left_fit.append((slope, y_intercept))
-            else:         # lines on the right will have positive slopes
+            else:         # lines on the right will have negative slopes
                 right_fit.append((slope, y_intercept))
 
     # If either list is empty, use the previous values (from params given)
     if not left_fit:
-        left_fit = left_fit_p    # values from prev recursion-cycle
+        left_fit = left_fit_p    # values from prev cycle
     elif not right_fit:
-        right_fit = right_fit_p  # values from prev recursion-cycle
+        right_fit = right_fit_p  # values from prev cycle
 
     # Calculate mean slope and mean y-intercept for left and right fits
     left_fit_avg = np.average(left_fit, axis=0)
@@ -200,8 +190,6 @@ def avg_slope_intercept(img_height, lines, left_fit_p, right_fit_p):
 """============================================================================
                                      MAIN
 ============================================================================"""
-
-
 def main():
 
     # Create class object of VideoCapture
